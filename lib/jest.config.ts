@@ -1,13 +1,11 @@
 /* eslint-disable */
-const baseConfig = require('../../jest.config.base.ts');
 export default {
-  ...baseConfig,
-  displayName: 'fun-puppeteer',
-  preset: '../../jest.preset.js',
+  displayName: 'puppeteer-base',
+  preset: '../jest.preset.js',
   testEnvironment: 'node',
   transform: {
     '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/apps/fun-puppeteer',
+  coverageDirectory: '../coverage/lib',
 };

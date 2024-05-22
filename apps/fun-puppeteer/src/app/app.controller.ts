@@ -1,13 +1,16 @@
-import { Controller, Get } from '@nestjs/common';
-
+import { Controller, Get, Param } from '@nestjs/common';
 import { AppService } from './app.service';
 
-@Controller()
+@Controller('search')
 export class AppController {
   constructor(private readonly appService: AppService) {}
-
-  @Get()
-  getData() {
-    return this.appService.getData();
+  /**
+   * Search text at Bing.com and returns Screen capture in base64
+   * @param text
+   * @returns base64String
+   */
+  @Get(':text')
+  async searchBing(@Param('text') text: string): Promise<string> {
+    return await this.appService.searchBing(text);
   }
 }

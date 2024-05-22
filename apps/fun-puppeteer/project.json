@@ -1,0 +1,24 @@
+{
+  "name": "fun-puppeteer",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/fun-puppeteer/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "fun-puppeteer:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "fun-puppeteer:build:development"
+        },
+        "production": {
+          "buildTarget": "fun-puppeteer:build:production"
+        }
+      }
+    }
+  }
+}

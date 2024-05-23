@@ -5,10 +5,19 @@ generating reports of the most common words, and handling specific language requ
 
 ## Table of Contents
 
+- [Setup](#setup)
 - [Endpoints](#endpoints)
-  - [Create Text Submission](#create-text-submission)
-  - [Get All Text Submissions](#get-all-text-submissions)
-  - [Get Report](#get-report)
+- [Create Text Submission](#create-text-submission)
+- [Get All Text Submissions](#get-all-text-submissions)
+- [Get Report](#get-report)
+
+# Setup
+
+Environment Variable
+
+```env
+FORBIDDEN_WORDS=halo,test //Array of Forbidden Words, will reject the submission if the content contains the given words
+```
 
 # Endpoints
 

@@ -14,7 +14,7 @@ describe('ForbiddenContentExceptionFilter', () => {
   });
 
   it('should catch ForbiddenContentException and return the proper response', () => {
-    const exception = new ForbiddenContentException();
+    const exception = new ForbiddenContentException('test');
     const mockResponse = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
@@ -31,7 +31,7 @@ describe('ForbiddenContentExceptionFilter', () => {
     expect(mockResponse.status).toHaveBeenCalledWith(400); // HttpStatus.BAD_REQUEST
     expect(mockResponse.json).toHaveBeenCalledWith({
       statusCode: 400,
-      message: 'Content contains the forbidden word "the".',
+      message: 'Content contains the forbidden word test.',
     });
   });
 });

@@ -6,9 +6,11 @@ import { TextSubmissionController } from '../text-submission/text-submission-con
 import { ReportService } from '../report/report.service';
 import { ReportController } from '../report/report-controller';
 import { LanguageGuard } from '../guards/language-guard';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'database.sqlite',

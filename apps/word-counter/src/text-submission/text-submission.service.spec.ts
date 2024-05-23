@@ -1,14 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TextSubmissionService } from './text-submission.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { TextSubmission } from '../entities/text-submission-entitiy';
+import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
+import { TextSubmission } from '../entities/text-submission-entitiy';
 import { CreateTextSubmissionDto } from '../dto/create-text-submission.dto';
 import { ForbiddenContentException } from '../exceptions/forbidden-content.exception';
 
 describe('TextSubmissionService', () => {
   let service: TextSubmissionService;
   let repository: Repository<TextSubmission>;
+  let configService: ConfigService;
+
+  const mockTextSubmissionRepository = {
+    save: jest
+      .fn()
+      .mockImplementation((textSubmission) =>
+        Promise.resolve({ id: 1, ...textSubmission })
+      ),
+    find: jest.fn().mockResolvedValue([{ id: 1, content: 'Sample text' }]),
+  };
+
+  const mockConfigService = {
+    get: jest.fn().mockReturnValue('forbidden,word'),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -16,7 +31,11 @@ describe('TextSubmissionService', () => {
         TextSubmissionService,
         {
           provide: getRepositoryToken(TextSubmission),
-          useClass: Repository,
+          useValue: mockTextSubmissionRepository,
+        },
+        {
+          provide: ConfigService,
+          useValue: mockConfigService,
         },
       ],
     }).compile();
@@ -25,52 +44,37 @@ describe('TextSubmissionService', () => {
     repository = module.get<Repository<TextSubmission>>(
       getRepositoryToken(TextSubmission)
     );
+    configService = module.get<ConfigService>(ConfigService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  describe('create', () => {
-    it('should create and save a text submission', async () => {
-      const createTextSubmissionDto: CreateTextSubmissionDto = {
-        content: 'This is a test submission.',
-      };
-      const textSubmission = new TextSubmission();
-      textSubmission.content = createTextSubmissionDto.content;
-
-      jest.spyOn(repository, 'save').mockResolvedValue(textSubmission);
-
-      expect(await service.create(createTextSubmissionDto)).toBe(
-        textSubmission
-      );
-      expect(repository.save).toHaveBeenCalledWith(
-        expect.objectContaining({ content: 'This is a test submission.' })
-      );
-    });
-
-    it('should throw ForbiddenContentException if content contains the word "the"', async () => {
-      const createTextSubmissionDto: CreateTextSubmissionDto = {
-        content: 'This is the forbidden word.',
-      };
-
-      await expect(service.create(createTextSubmissionDto)).rejects.toThrow(
-        ForbiddenContentException
-      );
+  it('should create a text submission successfully', async () => {
+    const createTextSubmissionDto: CreateTextSubmissionDto = {
+      content: 'This is a valid content',
+    };
+    const result = await service.create(createTextSubmissionDto);
+    expect(result).toEqual({ id: 1, content: 'This is a valid content' });
+    expect(repository.save).toHaveBeenCalledWith({
+      content: 'This is a valid content',
     });
   });
 
-  describe('findAll', () => {
-    it('should return an array of text submissions', async () => {
-      const textSubmissions = [
-        { id: 1, content: 'First submission' } as TextSubmission,
-        { id: 2, content: 'Second submission' } as TextSubmission,
-      ];
+  it('should throw ForbiddenContentException if content contains forbidden words', async () => {
+    const createTextSubmissionDto: CreateTextSubmissionDto = {
+      content: 'This contains forbidden word',
+    };
 
-      jest.spyOn(repository, 'find').mockResolvedValue(textSubmissions);
+    await expect(service.create(createTextSubmissionDto)).rejects.toThrow(
+      ForbiddenContentException
+    );
+  });
 
-      expect(await service.findAll()).toBe(textSubmissions);
-      expect(repository.find).toHaveBeenCalled();
-    });
+  it('should return all text submissions', async () => {
+    const result = await service.findAll();
+    expect(result).toEqual([{ id: 1, content: 'Sample text' }]);
+    expect(repository.find).toHaveBeenCalled();
   });
 });

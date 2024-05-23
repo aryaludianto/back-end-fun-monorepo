@@ -7,3 +7,21 @@
 ## Project Overview
 
 This project is a showcase of my skills in NestJS using the NX workspace. It contains various applications for different purposes and different libraries, all tested using Jest. Detailed descriptions of each application and library can be found in their respective README files within the project.
+
+## To Get started
+
+in the Project Root Run
+
+```bash
+
+npm install
+
+```
+
+## To serve an App
+
+```bash
+
+nx serve <app-name>
+
+```

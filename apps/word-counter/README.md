@@ -1,4 +1,4 @@
-# Word Caounter
+# Word Counter
 
 This is a simple API for Caounting repetitive words from text submissions,
 generating reports of the most common words, and handling specific language requirements.

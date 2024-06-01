@@ -5,6 +5,30 @@
   "projectType": "application",
   "tags": [],
   "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/word-counter",
+        "main": "apps/word-counter/src/main.ts",
+        "tsConfig": "apps/word-counter/tsconfig.app.json",
+        "assets": [
+          "apps/word-counter/src/assets"
+        ],
+        "webpackConfig": "apps/word-counter/webpack.config.js",
+        "generatePackageJson": true
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false
+        }
+      },
+      "postbuild": "cp database.sqlite dist/apps/word-counter"
+    },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
@@ -19,6 +43,32 @@
           "buildTarget": "word-counter:build:production"
         }
       }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        {
+          "target": "build",
+          "projects": "self"
+        }
+      ],
+      "options": {
+        "commands": ["docker build --file=Dockerfile . -t word-counter --build-arg=FUN_PROJECT=word-counter"],
+        "parallel": false
+      }
+    },
+      "container-run": {
+        "executor": "nx:run-commands",
+        "dependsOn": [
+          {
+            "target": "deploy",
+            "projects": "self"
+          }
+        ],
+        "options": {
+          "commands": ["FUN_PROJECT=word-counter docker compose up"],
+          "parallel": false
+        }
     }
   }
 }

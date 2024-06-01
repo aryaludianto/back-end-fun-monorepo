@@ -10,7 +10,8 @@
     "@nestjs/core": "^10.0.2",
     "@nestjs/platform-express": "^10.0.2",
     "@nestjs/typeorm": "^10.0.2",
-    "@nrwl/workspace": "^19.0.6",
+    "@nrwl/node": "^19.1.0",
+    "@nrwl/workspace": "^19.1.0",
     "axios": "^1.6.0",
     "puppeteer": "^21.9.0",
     "reflect-metadata": "^0.2.2",
@@ -23,7 +24,7 @@
   "devDependencies": {
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.2",
-    "@nrwl/nest": "^19.0.6",
+    "@nrwl/nest": "^19.1.0",
     "@nrwl/web": "^19.0.2",
     "@nx/eslint": "19.0.2",
     "@nx/eslint-plugin": "19.0.2",

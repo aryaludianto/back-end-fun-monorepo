@@ -108,3 +108,11 @@ To run the tests, use the following command:
 ```bash
 nx test word-counter
 ```
+
+## Dockerized App running in Local
+
+To run the tests, use the following command:
+
+```bash
+nx container-run word-counter
+```

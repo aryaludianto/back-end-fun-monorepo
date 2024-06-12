@@ -6,16 +6,26 @@ import { TextSubmissionController } from '../text-submission/text-submission-con
 import { ReportService } from '../report/report.service';
 import { ReportController } from '../report/report-controller';
 import { LanguageGuard } from '../guards/language-guard';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'database.sqlite',
-      entities: [TextSubmission],
-      synchronize: true,
+    ConfigModule.forRoot({
+      isGlobal: true, // Ensure the ConfigModule is globally available
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get<string>('DATABASE_HOST'),
+        port: configService.get<number>('DATABASE_PORT'),
+        username: configService.get<string>('DATABASE_USER'),
+        password: configService.get<string>('DATABASE_PASSWORD'),
+        database: configService.get<string>('DATABASE_NAME'),
+        entities: [TextSubmission],
+        synchronize: true,
+      }),
+      inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([TextSubmission]),
   ],

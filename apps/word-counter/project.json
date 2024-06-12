@@ -26,11 +26,16 @@
           "extractLicenses": true,
           "inspect": false
         }
-      },
-      "postbuild": "cp database.sqlite dist/apps/word-counter"
+      }
     },
     "serve": {
       "executor": "@nx/js:node",
+      "dependsOn": [
+        {
+           "target": "setup-db",
+          "projects": "self"
+        }
+      ],
       "defaultConfiguration": "development",
       "options": {
         "buildTarget": "word-counter:build"
@@ -66,9 +71,18 @@
           }
         ],
         "options": {
-          "commands": ["FUN_PROJECT=word-counter docker compose up"],
+          "commands": ["cd apps/word-counter && FUN_PROJECT=word-counter docker compose up"],
           "parallel": false
         }
+    },
+    "setup-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "FUN_PROJECT=word-counter docker-compose -f apps/word-counter/docker-compose.yml up -d db || true"
+        ],
+        "parallel": false
+      }
     }
   }
 }

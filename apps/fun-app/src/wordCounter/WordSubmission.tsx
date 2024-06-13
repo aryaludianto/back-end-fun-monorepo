@@ -27,10 +27,14 @@ const WordSubmission: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log({back_end__url: process.env.WORD_COUNTER_BACKEND_URL})
-    console.log(word)
-    // const response = await fetch(`${process.env.WORD_COUNTER_BACKEND_URL}api/text-submission`, {
-    const response = await fetch('http://localhost:8080/api/text-submission', {
+    const wordCounterBackendUrl = process.env.REACT_APP_WORD_COUNTER_BACKEND_URL
+    if(!wordCounterBackendUrl){
+      alert('Backend URL is not set in environment variables');
+      return;
+    }
+
+    const response = await fetch(`${wordCounterBackendUrl}/api/text-submission`, {
+    // const response = await fetch('http://localhost:8080/api/text-submission', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,9 +42,6 @@ const WordSubmission: React.FC = () => {
       },
       body: JSON.stringify({ content: word }),
     });
-
-
-    console.log({response})
 
     if (response.ok) {
       alert('Word submitted successfully');
